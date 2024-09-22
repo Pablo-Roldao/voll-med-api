@@ -1,12 +1,12 @@
 package med.voll.api.controller;
 
-import med.voll.api.domain.consulta.AgendaDeConsultas;
-
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import med.voll.api.domain.consulta.DadosAgendamentoConsulta;
-import med.voll.api.domain.consulta.DadosCancelamentoConsulta;
-import med.voll.api.domain.consulta.DadosDetalhamentoConsulta;
-import med.voll.api.domain.consulta.DadosListagemConsulta;
+import med.voll.api.domain.consulta.records.DadosAgendamentoConsulta;
+import med.voll.api.domain.consulta.records.DadosCancelamentoConsulta;
+import med.voll.api.domain.consulta.records.DadosDetalhamentoConsulta;
+import med.voll.api.domain.consulta.records.DadosListagemConsulta;
+import med.voll.api.domain.consulta.AgendaDeConsultas;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("consultas")
+@SecurityRequirement(name = "bearer-key")
 public class ConsultaController {
 
     private final AgendaDeConsultas agenda;
@@ -27,9 +28,9 @@ public class ConsultaController {
     @Transactional
     public ResponseEntity<DadosDetalhamentoConsulta> agendar(@RequestBody @Valid DadosAgendamentoConsulta dados) {
 
-        var consulta = agenda.agendar(dados);
+        var dtoConsulta = agenda.agendar(dados);
 
-        return ResponseEntity.ok(new DadosDetalhamentoConsulta(consulta.getId(), consulta.getMedico().getId(), consulta.getPaciente().getId(), consulta.getData()));
+        return ResponseEntity.ok(dtoConsulta);
     }
 
     @DeleteMapping
